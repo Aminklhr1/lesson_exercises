@@ -1,1 +1,26 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string compoundName;
+
+    cout << "Enter a chemical compound name: ";
+    getline(cin, compoundName);
+
+    cout << "Elements in the compound: " << endl;
+
+    string elements = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    size_t pos = compoundName.find_first_of(elements);
+
+    while (pos != string::npos) {
+        string element = compoundName.substr(pos, 1);
+        cout << element << endl;
+        pos = compoundName.find_first_of(elements, pos + 1);
+    }
+
+    return 0;
+}
+
 
