@@ -1,45 +1,104 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <iomanip>
 
 using namespace std;
+
+struct Employee {
+    string firstName;
+    string lastName;
+    int hoursWorked;
+    double hourlyRate;
+};
+
+void writeEmployeeDataToFile(const string& fileName, const vector<Employee>& employees) {
+    ofstream file(fileName);
+    if (!file) {
+        cerr << "Could not open file!" << endl;
+        return;
+    }
+
+    for (const Employee& employee : employees) {
+        file << employee.firstName << " " << employee.lastName << " "
+             << employee.hoursWorked << " " << employee.hourlyRate << endl;
+    }
+
+    file.close();
+}
+
+vector<Employee> readEmployeeDataFromFile(const string& fileName) {
+    vector<Employee> employees;
+    ifstream file(fileName);
+    if (!file) {
+        cerr << "Could not open file!" << endl;
+        return employees;
+    }
+
+    string firstName, lastName;
+    int hoursWorked;
+    double hourlyRate;
+
+    while (file >> firstName >> lastName >> hoursWorked >> hourlyRate) {
+        Employee employee;
+        employee.firstName = firstName;
+        employee.lastName = lastName;
+        employee.hoursWorked = hoursWorked;
+        employee.hourlyRate = hourlyRate;
+        employees.push_back(employee);
+    }
+
+    file.close();
+    return employees;
+}
+
+void calculateAndPrintTotalPayment(const vector<Employee>& employees) {
+    double totalPayment = 0.0;
+    for (const Employee& employee : employees) {
+        double payment = employee.hoursWorked * employee.hourlyRate;
+        totalPayment += payment;
+    }
+
+    cout << "Total payment to all employees: $" << fixed << setprecision(2) << totalPayment << endl;
+}
 
 int main() {
     int numEmployees;
     cout << "Enter the number of employees: ";
     cin >> numEmployees;
 
-    ofstream file("employees.txt");
-    if (!file) {
-        cerr << "Could not open file!" << endl;
-        return 1;
-    }
-
+    vector<Employee> employees;
     for (int i = 0; i < numEmployees; ++i) {
-        string firstName, lastName;
-        int hoursWorked;
-        double hourlyRate;
+        Employee employee;
 
         cout << "Employee " << i + 1 << ":" << endl;
 
         cout << "Enter first name: ";
-        cin >> firstName;
+        cin >> employee.firstName;
 
         cout << "Enter last name: ";
-        cin >> lastName;
+        cin >> employee.lastName;
 
         cout << "Enter hours worked: ";
-        cin >> hoursWorked;
+        cin >> employee.hoursWorked;
 
         cout << "Enter hourly rate: ";
-        cin >> hourlyRate;
+        cin >> employee.hourlyRate;
 
-        file << firstName << " " << lastName << " " << hoursWorked << " " << hourlyRate << endl;
+        employees.push_back(employee);
     }
 
-    file.close();
-
+    // Write employee data to file
+    writeEmployeeDataToFile("employees.txt", employees);
     cout << "Employee data written to file successfully." << endl;
+
+    // Read employee data from file
+    vector<Employee> loadedEmployees = readEmployeeDataFromFile("employees.txt");
+
+    // Calculate and print total payment
+    calculateAndPrintTotalPayment(loadedEmployees);
 
     return 0;
 }
+
