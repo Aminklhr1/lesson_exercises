@@ -1,0 +1,45 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    int numEmployees;
+    cout << "Enter the number of employees: ";
+    cin >> numEmployees;
+
+    ofstream file("employees.txt");
+    if (!file) {
+        cerr << "Could not open file!" << endl;
+        return 1;
+    }
+
+    for (int i = 0; i < numEmployees; ++i) {
+        string firstName, lastName;
+        int hoursWorked;
+        double hourlyRate;
+
+        cout << "Employee " << i + 1 << ":" << endl;
+
+        cout << "Enter first name: ";
+        cin >> firstName;
+
+        cout << "Enter last name: ";
+        cin >> lastName;
+
+        cout << "Enter hours worked: ";
+        cin >> hoursWorked;
+
+        cout << "Enter hourly rate: ";
+        cin >> hourlyRate;
+
+        file << firstName << " " << lastName << " " << hoursWorked << " " << hourlyRate << endl;
+    }
+
+    file.close();
+
+    cout << "Employee data written to file successfully." << endl;
+
+    return 0;
+}
